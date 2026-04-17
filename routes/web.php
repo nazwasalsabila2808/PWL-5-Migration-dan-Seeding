@@ -1,11 +1,22 @@
 <?php
+use App\Models\Book;
+use App\Models\Loan;
+use App\Models\User;
 
-use Illuminate\Support\Facades\Route;
-
-Route::view('/', 'welcome')->name('home');
-
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+// tampil semua buku + relasi rak
+Route::get('/books', function () {
+    $books = Book::with('bookshelf')->get();
+    return view('books.index', compact('books'));
 });
 
-require __DIR__.'/settings.php';
+// tampil user + pinjaman
+Route::get('/users', function () {
+    $users = User::with('loans')->get();
+    return view('users.index', compact('users'));
+});
+
+// tampil loan + detail + buku
+Route::get('/loans', function () {
+    $loans = Loan::with('loanDetails.book')->get();
+    return view('loans.index', compact('loans'));
+});
